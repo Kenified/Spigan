@@ -1,0 +1,295 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Kenified <kenified@protonmail.com>
+Date: Sun, 8 Jan 2023 01:36:06 +0100
+Subject: [PATCH] More falling blocks
+
+
+diff --git a/src/main/java/net/minecraft/world/level/block/Blocks.java b/src/main/java/net/minecraft/world/level/block/Blocks.java
+index c75404ddcb36105b84ff8c21545549bee5b4cb8e..e2bd8e0621a0da3a141be5d8a12ddc1ddc311323 100644
+--- a/src/main/java/net/minecraft/world/level/block/Blocks.java
++++ b/src/main/java/net/minecraft/world/level/block/Blocks.java
+@@ -49,10 +49,12 @@ public class Blocks {
+     public static final Block POLISHED_DIORITE = register("polished_diorite", new Block(BlockBehaviour.Properties.of(Material.STONE, MaterialColor.QUARTZ).requiresCorrectToolForDrops().strength(1.5F, 6.0F)));
+     public static final Block ANDESITE = register("andesite", new Block(BlockBehaviour.Properties.of(Material.STONE, MaterialColor.STONE).requiresCorrectToolForDrops().strength(1.5F, 6.0F)));
+     public static final Block POLISHED_ANDESITE = register("polished_andesite", new Block(BlockBehaviour.Properties.of(Material.STONE, MaterialColor.STONE).requiresCorrectToolForDrops().strength(1.5F, 6.0F)));
+-    public static final Block GRASS_BLOCK = register("grass_block", new GrassBlock(BlockBehaviour.Properties.of(Material.GRASS).randomTicks().strength(0.6F).sound(SoundType.GRASS)));
+-    public static final Block DIRT = register("dirt", new Block(BlockBehaviour.Properties.of(Material.DIRT, MaterialColor.DIRT).strength(0.5F).sound(SoundType.GRAVEL)));
+-    public static final Block COARSE_DIRT = register("coarse_dirt", new Block(BlockBehaviour.Properties.of(Material.DIRT, MaterialColor.DIRT).strength(0.5F).sound(SoundType.GRAVEL)));
+-    public static final Block PODZOL = register("podzol", new SnowyDirtBlock(BlockBehaviour.Properties.of(Material.DIRT, MaterialColor.PODZOL).strength(0.5F).sound(SoundType.GRAVEL)));
++    public static final Block GRASS_BLOCK = register("grass_block", new GrassBlock(9923917, BlockBehaviour.Properties.of(Material.GRASS).randomTicks().strength(0.6F).sound(SoundType.GRASS)));
++//    public static final Block DIRT = register("dirt", new Block(BlockBehaviour.Properties.of(Material.DIRT, MaterialColor.DIRT).strength(0.5F).sound(SoundType.GRAVEL))); // Spigan
++    public static final Block DIRT = register("dirt", new FallingSoilBlock(9923917, BlockBehaviour.Properties.of(Material.DIRT, MaterialColor.DIRT).strength(0.5F).sound(SoundType.GRAVEL))); // Spigan
++//    public static final Block COARSE_DIRT = register("coarse_dirt", new Block(BlockBehaviour.Properties.of(Material.DIRT, MaterialColor.DIRT).strength(0.5F).sound(SoundType.GRAVEL))); // Spigan
++    public static final Block COARSE_DIRT = register("coarse_dirt", new FallingSoilBlock(9923917, BlockBehaviour.Properties.of(Material.DIRT, MaterialColor.DIRT).strength(0.5F).sound(SoundType.GRAVEL))); // Spigan
++    public static final Block PODZOL = register("podzol", new SnowyDirtBlock(8476209, BlockBehaviour.Properties.of(Material.DIRT, MaterialColor.PODZOL).strength(0.5F).sound(SoundType.GRAVEL))); // Spigan
+     public static final Block COBBLESTONE = register("cobblestone", new Block(BlockBehaviour.Properties.of(Material.STONE).requiresCorrectToolForDrops().strength(2.0F, 6.0F)));
+     public static final Block OAK_PLANKS = register("oak_planks", new Block(BlockBehaviour.Properties.of(Material.WOOD, MaterialColor.WOOD).strength(2.0F, 3.0F).sound(SoundType.WOOD)));
+     public static final Block SPRUCE_PLANKS = register("spruce_planks", new Block(BlockBehaviour.Properties.of(Material.WOOD, MaterialColor.PODZOL).strength(2.0F, 3.0F).sound(SoundType.WOOD)));
+@@ -229,7 +231,7 @@ public class Blocks {
+     public static final Block DIAMOND_BLOCK = register("diamond_block", new Block(BlockBehaviour.Properties.of(Material.METAL, MaterialColor.DIAMOND).requiresCorrectToolForDrops().strength(5.0F, 6.0F).sound(SoundType.METAL)));
+     public static final Block CRAFTING_TABLE = register("crafting_table", new CraftingTableBlock(BlockBehaviour.Properties.of(Material.WOOD).strength(2.5F).sound(SoundType.WOOD)));
+     public static final Block WHEAT = register("wheat", new CropBlock(BlockBehaviour.Properties.of(Material.PLANT).noCollission().randomTicks().instabreak().sound(SoundType.CROP)));
+-    public static final Block FARMLAND = register("farmland", new FarmBlock(BlockBehaviour.Properties.of(Material.DIRT).randomTicks().strength(0.6F).sound(SoundType.GRAVEL).isViewBlocking(Blocks::always).isSuffocating(Blocks::always)));
++    public static final Block FARMLAND = register("farmland", new FarmBlock(9923917, BlockBehaviour.Properties.of(Material.DIRT).randomTicks().strength(0.6F).sound(SoundType.GRAVEL).isViewBlocking(Blocks::always).isSuffocating(Blocks::always))); // Spigan
+     public static final Block FURNACE = register("furnace", new FurnaceBlock(BlockBehaviour.Properties.of(Material.STONE).requiresCorrectToolForDrops().strength(3.5F).lightLevel(litBlockEmission(13))));
+     public static final Block OAK_SIGN = register("oak_sign", new StandingSignBlock(BlockBehaviour.Properties.of(Material.WOOD).noCollission().strength(1.0F).sound(SoundType.WOOD), WoodType.OAK));
+     public static final Block SPRUCE_SIGN = register("spruce_sign", new StandingSignBlock(BlockBehaviour.Properties.of(Material.WOOD, SPRUCE_LOG.defaultMaterialColor()).noCollission().strength(1.0F).sound(SoundType.WOOD), WoodType.SPRUCE));
+@@ -293,9 +295,11 @@ public class Blocks {
+     public static final Block ICE = register("ice", new IceBlock(BlockBehaviour.Properties.of(Material.ICE).friction(0.98F).randomTicks().strength(0.5F).sound(SoundType.GLASS).noOcclusion().isValidSpawn((state, world, pos, entityType) -> {
+         return entityType == EntityType.POLAR_BEAR;
+     })));
+-    public static final Block SNOW_BLOCK = register("snow_block", new Block(BlockBehaviour.Properties.of(Material.SNOW).requiresCorrectToolForDrops().strength(0.2F).sound(SoundType.SNOW)));
++//    public static final Block SNOW_BLOCK = register("snow_block", new Block(BlockBehaviour.Properties.of(Material.SNOW).requiresCorrectToolForDrops().strength(0.2F).sound(SoundType.SNOW))); // Spigan
++    public static final Block SNOW_BLOCK = register("snow_block", new FallingSoilBlock(16777215, BlockBehaviour.Properties.of(Material.SNOW).requiresCorrectToolForDrops().strength(0.2F).sound(SoundType.SNOW))); // Spigan
+     public static final Block CACTUS = register("cactus", new CactusBlock(BlockBehaviour.Properties.of(Material.CACTUS).randomTicks().strength(0.4F).sound(SoundType.WOOL)));
+-    public static final Block CLAY = register("clay", new Block(BlockBehaviour.Properties.of(Material.CLAY).strength(0.6F).sound(SoundType.GRAVEL)));
++//    public static final Block CLAY = register("clay", new Block(BlockBehaviour.Properties.of(Material.CLAY).strength(0.6F).sound(SoundType.GRAVEL))); // Spigan
++    public static final Block CLAY = register("clay", new FallingSoilBlock(10791096, BlockBehaviour.Properties.of(Material.CLAY).strength(0.6F).sound(SoundType.GRAVEL))); // Spigan
+     public static final Block SUGAR_CANE = register("sugar_cane", new SugarCaneBlock(BlockBehaviour.Properties.of(Material.PLANT).noCollission().randomTicks().instabreak().sound(SoundType.GRASS)));
+     public static final Block JUKEBOX = register("jukebox", new JukeboxBlock(BlockBehaviour.Properties.of(Material.WOOD, MaterialColor.DIRT).strength(2.0F, 6.0F)));
+     public static final Block OAK_FENCE = register("oak_fence", new FenceBlock(BlockBehaviour.Properties.of(Material.WOOD, OAK_PLANKS.defaultMaterialColor()).strength(2.0F, 3.0F).sound(SoundType.WOOD)));
+@@ -384,7 +388,7 @@ public class Blocks {
+     public static final Block BRICK_STAIRS = register("brick_stairs", new StairBlock(BRICKS.defaultBlockState(), BlockBehaviour.Properties.copy(BRICKS)));
+     public static final Block STONE_BRICK_STAIRS = register("stone_brick_stairs", new StairBlock(STONE_BRICKS.defaultBlockState(), BlockBehaviour.Properties.copy(STONE_BRICKS)));
+     public static final Block MUD_BRICK_STAIRS = register("mud_brick_stairs", new StairBlock(MUD_BRICKS.defaultBlockState(), BlockBehaviour.Properties.copy(MUD_BRICKS)));
+-    public static final Block MYCELIUM = register("mycelium", new MyceliumBlock(BlockBehaviour.Properties.of(Material.GRASS, MaterialColor.COLOR_PURPLE).randomTicks().strength(0.6F).sound(SoundType.GRASS)));
++    public static final Block MYCELIUM = register("mycelium", new MyceliumBlock(8339378, BlockBehaviour.Properties.of(Material.GRASS, MaterialColor.COLOR_PURPLE).randomTicks().strength(0.6F).sound(SoundType.GRASS))); // Spigan
+     public static final Block LILY_PAD = register("lily_pad", new WaterlilyBlock(BlockBehaviour.Properties.of(Material.PLANT).instabreak().sound(SoundType.LILY_PAD).noOcclusion()));
+     public static final Block NETHER_BRICKS = register("nether_bricks", new Block(BlockBehaviour.Properties.of(Material.STONE, MaterialColor.NETHER).requiresCorrectToolForDrops().strength(2.0F, 6.0F).sound(SoundType.NETHER_BRICKS)));
+     public static final Block NETHER_BRICK_FENCE = register("nether_brick_fence", new FenceBlock(BlockBehaviour.Properties.of(Material.STONE, MaterialColor.NETHER).requiresCorrectToolForDrops().strength(2.0F, 6.0F).sound(SoundType.NETHER_BRICKS)));
+@@ -672,7 +676,7 @@ public class Blocks {
+     public static final Block PURPUR_STAIRS = register("purpur_stairs", new StairBlock(PURPUR_BLOCK.defaultBlockState(), BlockBehaviour.Properties.copy(PURPUR_BLOCK)));
+     public static final Block END_STONE_BRICKS = register("end_stone_bricks", new Block(BlockBehaviour.Properties.of(Material.STONE, MaterialColor.SAND).requiresCorrectToolForDrops().strength(3.0F, 9.0F)));
+     public static final Block BEETROOTS = register("beetroots", new BeetrootBlock(BlockBehaviour.Properties.of(Material.PLANT).noCollission().randomTicks().instabreak().sound(SoundType.CROP)));
+-    public static final Block DIRT_PATH = register("dirt_path", new DirtPathBlock(BlockBehaviour.Properties.of(Material.DIRT).strength(0.65F).sound(SoundType.GRASS).isViewBlocking(Blocks::always).isSuffocating(Blocks::always)));
++    public static final Block DIRT_PATH = register("dirt_path", new DirtPathBlock(9923917, BlockBehaviour.Properties.of(Material.DIRT).strength(0.65F).sound(SoundType.GRASS).isViewBlocking(Blocks::always).isSuffocating(Blocks::always))); // Spigan
+     public static final Block END_GATEWAY = register("end_gateway", new EndGatewayBlock(BlockBehaviour.Properties.of(Material.PORTAL, MaterialColor.COLOR_BLACK).noCollission().lightLevel((state) -> {
+         return 15;
+     }).strength(-1.0F, 3600000.0F).noLootTable()));
+diff --git a/src/main/java/net/minecraft/world/level/block/DirtPathBlock.java b/src/main/java/net/minecraft/world/level/block/DirtPathBlock.java
+index 3e4dc3b72ff14face0b9a7744ea74ae1c6d23a9a..35efb73cc34abfccefce33051a42607ccf5ec9a9 100644
+--- a/src/main/java/net/minecraft/world/level/block/DirtPathBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/DirtPathBlock.java
+@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
+ import net.minecraft.core.Direction;
+ import net.minecraft.server.level.ServerLevel;
+ import net.minecraft.util.RandomSource;
++import net.minecraft.world.entity.item.FallingBlockEntity;
+ import net.minecraft.world.item.context.BlockPlaceContext;
+ import net.minecraft.world.level.BlockGetter;
+ import net.minecraft.world.level.LevelAccessor;
+@@ -14,14 +15,22 @@ import net.minecraft.world.level.pathfinder.PathComputationType;
+ import net.minecraft.world.phys.shapes.CollisionContext;
+ import net.minecraft.world.phys.shapes.VoxelShape;
+ 
+-public class DirtPathBlock extends Block {
++public class DirtPathBlock extends FallingBlock { // Spigan
+ 
+     protected static final VoxelShape SHAPE = FarmBlock.SHAPE;
+-
+-    protected DirtPathBlock(BlockBehaviour.Properties settings) {
++    private final int dustColor; // Spigan
++    protected DirtPathBlock(int color, BlockBehaviour.Properties settings) { // Spigan
+         super(settings);
++        this.dustColor = color; // Spigan
+     }
+ 
++    // Spigan start
++    @Override
++    public int getDustColor(BlockState state, BlockGetter world, BlockPos pos) {
++        return dustColor;
++    }
++    // Spigan end
++
+     @Override
+     public boolean useShapeForLightOcclusion(BlockState state) {
+         return true;
+@@ -43,6 +52,12 @@ public class DirtPathBlock extends Block {
+ 
+     @Override
+     public void tick(BlockState state, ServerLevel world, BlockPos pos, RandomSource random) {
++        // Spigan start
++        if (isFree(world.getBlockState(pos.below())) && pos.getY() >= world.getMinBuildHeight()) {
++            FallingBlockEntity fallingBlockEntity = FallingBlockEntity.fall(world, pos, state);
++            this.falling(fallingBlockEntity);
++        }
++        // Spigan end
+         // CraftBukkit start - do not fade if the block is valid here
+         if (state.canSurvive(world, pos)) {
+             return;
+diff --git a/src/main/java/net/minecraft/world/level/block/FallingSoilBlock.java b/src/main/java/net/minecraft/world/level/block/FallingSoilBlock.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..eabef7d9d6868beccf0a8c33841d5b45ea0a7947
+--- /dev/null
++++ b/src/main/java/net/minecraft/world/level/block/FallingSoilBlock.java
+@@ -0,0 +1,21 @@
++// Spigan start
++package net.minecraft.world.level.block;
++
++import net.minecraft.core.BlockPos;
++import net.minecraft.world.level.BlockGetter;
++import net.minecraft.world.level.block.state.BlockBehaviour;
++import net.minecraft.world.level.block.state.BlockState;
++
++public class FallingSoilBlock extends FallingBlock {
++    private final int dustColor;
++    public FallingSoilBlock(int color, BlockBehaviour.Properties settings) {
++        super(settings);
++        this.dustColor = color;
++    }
++
++    @Override
++    public int getDustColor(BlockState state, BlockGetter world, BlockPos pos) {
++        return dustColor;
++    }
++}
++// Spigan end
+\ No newline at end of file
+diff --git a/src/main/java/net/minecraft/world/level/block/FarmBlock.java b/src/main/java/net/minecraft/world/level/block/FarmBlock.java
+index 7068cb39ab264fa0c65febff01236b8de564b883..dc755e7b25e2efa36950d78979761247e252332f 100644
+--- a/src/main/java/net/minecraft/world/level/block/FarmBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/FarmBlock.java
+@@ -8,6 +8,7 @@ import net.minecraft.tags.FluidTags;
+ import net.minecraft.util.RandomSource;
+ import net.minecraft.world.entity.Entity;
+ import net.minecraft.world.entity.LivingEntity;
++import net.minecraft.world.entity.item.FallingBlockEntity;
+ import net.minecraft.world.entity.player.Player;
+ import net.minecraft.world.item.context.BlockPlaceContext;
+ import net.minecraft.world.level.BlockGetter;
+@@ -29,17 +30,26 @@ import org.bukkit.event.entity.EntityInteractEvent;
+ import org.bukkit.craftbukkit.event.CraftEventFactory;
+ // CraftBukkit end
+ 
+-public class FarmBlock extends Block {
++public class FarmBlock extends FallingBlock { // Spigan
+ 
+     public static final IntegerProperty MOISTURE = BlockStateProperties.MOISTURE;
+     protected static final VoxelShape SHAPE = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 15.0D, 16.0D);
+     public static final int MAX_MOISTURE = 7;
++    private final int dustColor; // Spigan
+ 
+-    protected FarmBlock(BlockBehaviour.Properties settings) {
++    protected FarmBlock(int color, BlockBehaviour.Properties settings) { // Spigan
+         super(settings);
+         this.registerDefaultState((BlockState) ((BlockState) this.stateDefinition.any()).setValue(FarmBlock.MOISTURE, 0));
++        this.dustColor = color; // Spigan
+     }
+ 
++    // Spigan start
++    @Override
++    public int getDustColor(BlockState state, BlockGetter world, BlockPos pos) {
++        return dustColor;
++    }
++    // Spigan end
++
+     @Override
+     public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor world, BlockPos pos, BlockPos neighborPos) {
+         if (direction == Direction.UP && !state.canSurvive(world, pos)) {
+@@ -81,6 +91,12 @@ public class FarmBlock extends Block {
+ 
+     @Override
+     public void randomTick(BlockState state, ServerLevel world, BlockPos pos, RandomSource random) {
++        // Spigan start
++        if (isFree(world.getBlockState(pos.below())) && pos.getY() >= world.getMinBuildHeight()) {
++            FallingBlockEntity fallingBlockEntity = FallingBlockEntity.fall(world, pos, state);
++            this.falling(fallingBlockEntity);
++        }
++        // Spigan end
+         int i = (Integer) state.getValue(FarmBlock.MOISTURE);
+ 
+         if (!FarmBlock.isNearWater(world, pos) && !world.isRainingAt(pos.above())) {
+diff --git a/src/main/java/net/minecraft/world/level/block/GrassBlock.java b/src/main/java/net/minecraft/world/level/block/GrassBlock.java
+index 05d7d4588dd4ecc6c59dac98088e44ab3efa7351..157498a7ebe1238367f00ffa6b9ecba7670d427b 100644
+--- a/src/main/java/net/minecraft/world/level/block/GrassBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/GrassBlock.java
+@@ -17,9 +17,12 @@ import net.minecraft.world.level.levelgen.feature.configurations.RandomPatchConf
+ import net.minecraft.world.level.levelgen.placement.PlacedFeature;
+ 
+ public class GrassBlock extends SpreadingSnowyDirtBlock implements BonemealableBlock {
+-    public GrassBlock(BlockBehaviour.Properties settings) {
+-        super(settings);
++    // Spigan start
++
++    public GrassBlock(int color, BlockBehaviour.Properties settings) {
++        super(color, settings);
+     }
++    // Spigan end
+ 
+     @Override
+     public boolean isValidBonemealTarget(LevelReader world, BlockPos pos, BlockState state, boolean isClient) {
+diff --git a/src/main/java/net/minecraft/world/level/block/MyceliumBlock.java b/src/main/java/net/minecraft/world/level/block/MyceliumBlock.java
+index 193573ceb317eb525cf0e948c67a9aa4be271b08..d14fa73ef0f1b48509ed9acef06924ddd2d763d6 100644
+--- a/src/main/java/net/minecraft/world/level/block/MyceliumBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/MyceliumBlock.java
+@@ -8,10 +8,11 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
+ import net.minecraft.world.level.block.state.BlockState;
+ 
+ public class MyceliumBlock extends SpreadingSnowyDirtBlock {
+-    public MyceliumBlock(BlockBehaviour.Properties settings) {
+-        super(settings);
++    // Spigan start
++    public MyceliumBlock(int color, BlockBehaviour.Properties settings) {
++        super(color, settings);
+     }
+-
++    // Spigan end
+     @Override
+     public void animateTick(BlockState state, Level world, BlockPos pos, RandomSource random) {
+         super.animateTick(state, world, pos, random);
+diff --git a/src/main/java/net/minecraft/world/level/block/SnowyDirtBlock.java b/src/main/java/net/minecraft/world/level/block/SnowyDirtBlock.java
+index f95284fcf5b9c922227670b9357523eba9b7ffcc..0d01cc8ddedf9b7686c7ee6d87713fd2fce24d13 100644
+--- a/src/main/java/net/minecraft/world/level/block/SnowyDirtBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/SnowyDirtBlock.java
+@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
+ import net.minecraft.core.Direction;
+ import net.minecraft.tags.BlockTags;
+ import net.minecraft.world.item.context.BlockPlaceContext;
++import net.minecraft.world.level.BlockGetter;
+ import net.minecraft.world.level.LevelAccessor;
+ import net.minecraft.world.level.block.state.BlockBehaviour;
+ import net.minecraft.world.level.block.state.BlockState;
+@@ -11,14 +12,23 @@ import net.minecraft.world.level.block.state.StateDefinition;
+ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+ import net.minecraft.world.level.block.state.properties.BooleanProperty;
+ 
+-public class SnowyDirtBlock extends Block {
++public class SnowyDirtBlock extends FallingBlock {
+     public static final BooleanProperty SNOWY = BlockStateProperties.SNOWY;
+ 
+-    protected SnowyDirtBlock(BlockBehaviour.Properties settings) {
++    // Spigan start
++    private final int dustColor;
++    protected SnowyDirtBlock(int color, BlockBehaviour.Properties settings) {
+         super(settings);
+         this.registerDefaultState(this.stateDefinition.any().setValue(SNOWY, Boolean.valueOf(false)));
++        this.dustColor = color;
+     }
+ 
++    @Override
++    public int getDustColor(BlockState state, BlockGetter world, BlockPos pos) {
++        return dustColor;
++    }
++    // Spigan end
++
+     @Override
+     public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor world, BlockPos pos, BlockPos neighborPos) {
+         return direction == Direction.UP ? state.setValue(SNOWY, Boolean.valueOf(isSnowySetting(neighborState))) : super.updateShape(state, direction, neighborState, world, pos, neighborPos);
+diff --git a/src/main/java/net/minecraft/world/level/block/SpreadingSnowyDirtBlock.java b/src/main/java/net/minecraft/world/level/block/SpreadingSnowyDirtBlock.java
+index af46c05a34292d271fd4a809398e6b299e10b12b..800a0e594a1a49166120a75f139b33b46da47590 100644
+--- a/src/main/java/net/minecraft/world/level/block/SpreadingSnowyDirtBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/SpreadingSnowyDirtBlock.java
+@@ -13,9 +13,11 @@ import net.minecraft.world.level.lighting.LayerLightEngine;
+ 
+ public abstract class SpreadingSnowyDirtBlock extends SnowyDirtBlock {
+ 
+-    protected SpreadingSnowyDirtBlock(BlockBehaviour.Properties settings) {
+-        super(settings);
++    // Spigan start
++    protected SpreadingSnowyDirtBlock(int color, BlockBehaviour.Properties settings) {
++        super(color, settings);
+     }
++    // Spigan end
+ 
+     private static boolean canBeGrass(BlockState state, LevelReader world, BlockPos pos) {
+     // Paper start
