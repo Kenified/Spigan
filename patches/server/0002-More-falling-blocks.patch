@@ -146,7 +146,7 @@ index 0000000000000000000000000000000000000000..eabef7d9d6868beccf0a8c33841d5b45
 +// Spigan end
 \ No newline at end of file
 diff --git a/src/main/java/net/minecraft/world/level/block/FarmBlock.java b/src/main/java/net/minecraft/world/level/block/FarmBlock.java
-index 7068cb39ab264fa0c65febff01236b8de564b883..dc755e7b25e2efa36950d78979761247e252332f 100644
+index 7068cb39ab264fa0c65febff01236b8de564b883..418812062ec152cca60f0b696e6cbb4a7e1fbd77 100644
 --- a/src/main/java/net/minecraft/world/level/block/FarmBlock.java
 +++ b/src/main/java/net/minecraft/world/level/block/FarmBlock.java
 @@ -8,6 +8,7 @@ import net.minecraft.tags.FluidTags;
@@ -186,19 +186,19 @@ index 7068cb39ab264fa0c65febff01236b8de564b883..dc755e7b25e2efa36950d78979761247
      @Override
      public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor world, BlockPos pos, BlockPos neighborPos) {
          if (direction == Direction.UP && !state.canSurvive(world, pos)) {
-@@ -81,6 +91,12 @@ public class FarmBlock extends Block {
+@@ -73,6 +83,12 @@ public class FarmBlock extends Block {
  
      @Override
-     public void randomTick(BlockState state, ServerLevel world, BlockPos pos, RandomSource random) {
+     public void tick(BlockState state, ServerLevel world, BlockPos pos, RandomSource random) {
 +        // Spigan start
 +        if (isFree(world.getBlockState(pos.below())) && pos.getY() >= world.getMinBuildHeight()) {
 +            FallingBlockEntity fallingBlockEntity = FallingBlockEntity.fall(world, pos, state);
 +            this.falling(fallingBlockEntity);
 +        }
 +        // Spigan end
-         int i = (Integer) state.getValue(FarmBlock.MOISTURE);
- 
-         if (!FarmBlock.isNearWater(world, pos) && !world.isRainingAt(pos.above())) {
+         if (!state.canSurvive(world, pos)) {
+             FarmBlock.turnToDirt(state, world, pos);
+         }
 diff --git a/src/main/java/net/minecraft/world/level/block/GrassBlock.java b/src/main/java/net/minecraft/world/level/block/GrassBlock.java
 index 05d7d4588dd4ecc6c59dac98088e44ab3efa7351..157498a7ebe1238367f00ffa6b9ecba7670d427b 100644
 --- a/src/main/java/net/minecraft/world/level/block/GrassBlock.java
@@ -238,18 +238,23 @@ index 193573ceb317eb525cf0e948c67a9aa4be271b08..d14fa73ef0f1b48509ed9acef06924dd
      public void animateTick(BlockState state, Level world, BlockPos pos, RandomSource random) {
          super.animateTick(state, world, pos, random);
 diff --git a/src/main/java/net/minecraft/world/level/block/SnowyDirtBlock.java b/src/main/java/net/minecraft/world/level/block/SnowyDirtBlock.java
-index f95284fcf5b9c922227670b9357523eba9b7ffcc..0d01cc8ddedf9b7686c7ee6d87713fd2fce24d13 100644
+index f95284fcf5b9c922227670b9357523eba9b7ffcc..9c6de200961b4b657b67247036503761ff5f7cdf 100644
 --- a/src/main/java/net/minecraft/world/level/block/SnowyDirtBlock.java
 +++ b/src/main/java/net/minecraft/world/level/block/SnowyDirtBlock.java
-@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
+@@ -2,8 +2,12 @@ package net.minecraft.world.level.block;
+ 
+ import net.minecraft.core.BlockPos;
  import net.minecraft.core.Direction;
++import net.minecraft.server.level.ServerLevel;
  import net.minecraft.tags.BlockTags;
++import net.minecraft.util.RandomSource;
++import net.minecraft.world.entity.item.FallingBlockEntity;
  import net.minecraft.world.item.context.BlockPlaceContext;
 +import net.minecraft.world.level.BlockGetter;
  import net.minecraft.world.level.LevelAccessor;
  import net.minecraft.world.level.block.state.BlockBehaviour;
  import net.minecraft.world.level.block.state.BlockState;
-@@ -11,14 +12,23 @@ import net.minecraft.world.level.block.state.StateDefinition;
+@@ -11,14 +15,33 @@ import net.minecraft.world.level.block.state.StateDefinition;
  import net.minecraft.world.level.block.state.properties.BlockStateProperties;
  import net.minecraft.world.level.block.state.properties.BooleanProperty;
  
@@ -269,6 +274,16 @@ index f95284fcf5b9c922227670b9357523eba9b7ffcc..0d01cc8ddedf9b7686c7ee6d87713fd2
 +    @Override
 +    public int getDustColor(BlockState state, BlockGetter world, BlockPos pos) {
 +        return dustColor;
++    }
++    @Override
++    public void tick(BlockState state, ServerLevel world, BlockPos pos, RandomSource random) {
++        if (isFree(world.getBlockState(pos.below())) && pos.getY() >= world.getMinBuildHeight()) {
++            if (state.getValue(SnowyDirtBlock.SNOWY)){
++                state.setValue(SNOWY, false);
++            }
++            FallingBlockEntity fallingBlockEntity = FallingBlockEntity.fall(world, pos, state);
++            this.falling(fallingBlockEntity);
++        }
 +    }
 +    // Spigan end
 +

@@ -1,0 +1,26 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Kenified <kenified@protonmail.com>
+Date: Mon, 9 Jan 2023 11:53:15 +0100
+Subject: [PATCH] More falling blocks
+
+
+diff --git a/src/main/java/org/bukkit/Material.java b/src/main/java/org/bukkit/Material.java
+index 0a3013843f7e1d3fcedfaca6a7b288642ebcb407..ad569e9f6ab11808b190b9ecab7ed98cf34856fc 100644
+--- a/src/main/java/org/bukkit/Material.java
++++ b/src/main/java/org/bukkit/Material.java
+@@ -8251,6 +8251,15 @@ public enum Material implements Keyed, net.kyori.adventure.translation.Translata
+             case SAND:
+             case WHITE_CONCRETE_POWDER:
+             case YELLOW_CONCRETE_POWDER:
++            case GRASS_BLOCK:
++            case DIRT:
++            case COARSE_DIRT:
++            case PODZOL:
++            case FARMLAND:
++            case SNOW_BLOCK:
++            case CLAY:
++            case MYCELIUM:
++            case DIRT_PATH:
+             // ----- Legacy Separator -----
+             case LEGACY_SAND:
+             case LEGACY_GRAVEL:

@@ -74,7 +74,7 @@ index b69634a5cf57e4086e644819f68638d6a2ab897c..860cf33909b243cddd373b6f46df19c9
      private final String bukkitVersion = Versioning.getBukkitVersion();
      private final Logger logger = Logger.getLogger("Minecraft");
 diff --git a/src/main/java/org/bukkit/craftbukkit/util/Versioning.java b/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
-index fb87620c742ff7912f5e8ccd2a7930dd605576d9..9c18acf824ea4d364e31cdee94a4bff2e21bcd0f 100644
+index fb87620c742ff7912f5e8ccd2a7930dd605576d9..d004b191f055422e3ced73afd16588684323a885 100644
 --- a/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
 +++ b/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
 @@ -11,7 +11,7 @@ public final class Versioning {
@@ -82,7 +82,7 @@ index fb87620c742ff7912f5e8ccd2a7930dd605576d9..9c18acf824ea4d364e31cdee94a4bff2
          String result = "Unknown-Version";
  
 -        InputStream stream = Bukkit.class.getClassLoader().getResourceAsStream("META-INF/maven/org.purpurmc.purpur/purpur-api/pom.properties"); // Purpur
-+        InputStream stream = Bukkit.class.getClassLoader().getResourceAsStream("META-INF/maven/org.purpurmc.tentacles/tentacles-api/pom.properties"); // Purpur // Tentacles
++        InputStream stream = Bukkit.class.getClassLoader().getResourceAsStream("META-INF/maven/com.minecubedmc.spigan/spigan-api/pom.properties"); // Purpur // Tentacles // Spigan
          Properties properties = new Properties();
  
          if (stream != null) {
