@@ -5,10 +5,10 @@ Subject: [PATCH] More falling blocks
 
 
 diff --git a/src/main/java/org/bukkit/Material.java b/src/main/java/org/bukkit/Material.java
-index 0a3013843f7e1d3fcedfaca6a7b288642ebcb407..ad569e9f6ab11808b190b9ecab7ed98cf34856fc 100644
+index 4df3de56641b0ce028f25ee8d3ed496c707302a7..de71f2208c2bb6a70d66f55b2d219027f665ee9c 100644
 --- a/src/main/java/org/bukkit/Material.java
 +++ b/src/main/java/org/bukkit/Material.java
-@@ -8251,6 +8251,15 @@ public enum Material implements Keyed, net.kyori.adventure.translation.Translata
+@@ -8277,6 +8277,15 @@ public enum Material implements Keyed, net.kyori.adventure.translation.Translata
              case SAND:
              case WHITE_CONCRETE_POWDER:
              case YELLOW_CONCRETE_POWDER:
